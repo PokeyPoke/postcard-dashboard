@@ -1,0 +1,14 @@
+<div class="list-container">
+    <div class="list-header">
+        <h1>{{ title }}</h1>
+        {% if searchable %}
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Search {{ search_placeholder or 'items' }}..." />
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="list-content">
+        {{ content }}
+    </div>
+</div>

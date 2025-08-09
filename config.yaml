@@ -1,0 +1,16 @@
+build:
+  throttle_ms: 400  # milliseconds between API requests
+  retry_delay_ms: 2000  # milliseconds to wait before retry on 429
+  chunk_sizes:
+    crypto: 100
+    stocks: 50
+
+apis:
+  open_meteo_geocoding: "https://geocoding-api.open-meteo.com/v1/search"
+  open_meteo_forecast: "https://api.open-meteo.com/v1/forecast"
+  stooq_base: "https://stooq.com/q/l/?s={}&f=sd2t2ohlcv&h&e=csv"
+  coingecko_price: "https://api.coingecko.com/api/v3/simple/price"
+
+site:
+  title: "Postcard Dashboard"
+  description: "Static dashboard with weather, stocks, crypto, and transit data"

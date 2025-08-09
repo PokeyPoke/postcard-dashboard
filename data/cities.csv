@@ -1,0 +1,65 @@
+slug,name,country,city
+nyc,New York City,US,New York
+la,Los Angeles,US,Los Angeles
+chi,Chicago,US,Chicago
+hou,Houston,US,Houston
+phx,Phoenix,US,Phoenix
+phi,Philadelphia,US,Philadelphia
+sa,San Antonio,US,San Antonio
+sd,San Diego,US,San Diego
+dal,Dallas,US,Dallas
+sj,San Jose,US,San Jose
+aus,Austin,US,Austin
+jax,Jacksonville,US,Jacksonville
+fc,Fort Worth,US,Fort Worth
+col,Columbus,US,Columbus
+sf,San Francisco,US,San Francisco
+cha,Charlotte,US,Charlotte
+sea,Seattle,US,Seattle
+den,Denver,US,Denver
+el,El Paso,US,El Paso
+det,Detroit,US,Detroit
+was,Washington,US,Washington
+bos,Boston,US,Boston
+mem,Memphis,US,Memphis
+nash,Nashville,US,Nashville
+por,Portland,US,Portland
+okc,Oklahoma City,US,Oklahoma City
+lv,Las Vegas,US,Las Vegas
+lou,Louisville,US,Louisville
+bal,Baltimore,US,Baltimore
+mil,Milwaukee,US,Milwaukee
+alb,Albuquerque,US,Albuquerque
+tuc,Tucson,US,Tucson
+fre,Fresno,US,Fresno
+sac,Sacramento,US,Sacramento
+long,Long Beach,US,Long Beach
+kc,Kansas City,US,Kansas City
+mesa,Mesa,US,Mesa
+vb,Virginia Beach,US,Virginia Beach
+atl,Atlanta,US,Atlanta
+colo,Colorado Springs,US,Colorado Springs
+oma,Omaha,US,Omaha
+ral,Raleigh,US,Raleigh
+mia,Miami,US,Miami
+oak,Oakland,US,Oakland
+min,Minneapolis,US,Minneapolis
+tul,Tulsa,US,Tulsa
+cle,Cleveland,US,Cleveland
+wic,Wichita,US,Wichita
+arl,Arlington,US,Arlington
+no,New Orleans,US,New Orleans
+bak,Bakersfield,US,Bakersfield
+tb,Tampa,US,Tampa
+hon,Honolulu,US,Honolulu
+aur,Aurora,US,Aurora
+ana,Anaheim,US,Anaheim
+stl,St. Louis,US,St. Louis
+riv,Riverside,US,Riverside
+corp,Corpus Christi,US,Corpus Christi
+lex,Lexington,US,Lexington
+pit,Pittsburgh,US,Pittsburgh
+anc,Anchorage,US,Anchorage
+stock,Stockton,US,Stockton
+cin,Cincinnati,US,Cincinnati
+sp,St. Paul,US,St. Paul

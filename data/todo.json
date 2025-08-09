@@ -1,0 +1,19 @@
+{
+  "todos": [
+    {
+      "id": 1,
+      "text": "Review API rate limits",
+      "completed": false
+    },
+    {
+      "id": 2,
+      "text": "Add more cities to dataset",
+      "completed": false
+    },
+    {
+      "id": 3,
+      "text": "Test transit integration",
+      "completed": true
+    }
+  ]
+}

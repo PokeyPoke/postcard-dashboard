@@ -1,0 +1,18 @@
+<div class="card {{ module_type }}">
+    {% if title %}
+    <div class="card-header">
+        <h3>{{ title }}</h3>
+        {% if subtitle %}<span class="subtitle">{{ subtitle }}</span>{% endif %}
+    </div>
+    {% endif %}
+    
+    <div class="card-content">
+        {{ content }}
+    </div>
+    
+    {% if footer %}
+    <div class="card-footer">
+        {{ footer }}
+    </div>
+    {% endif %}
+</div>

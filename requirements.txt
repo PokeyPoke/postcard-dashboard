@@ -1,0 +1,4 @@
+requests>=2.31.0
+PyYAML>=6.0
+markdown>=3.5
+Jinja2>=3.1.0

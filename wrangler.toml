@@ -1,0 +1,22 @@
+name = "postcard-transit-worker"
+type = "javascript"
+
+account_id = ""  # Add your Cloudflare account ID here
+workers_dev = true
+route = ""
+zone_id = ""
+
+[build]
+command = ""
+
+[build.upload]
+format = "modules"
+dir = "cloudflare"
+main = "./worker.js"
+
+[env.production.vars]
+# Optional: Set this to your actual transit API endpoint
+# TRANSIT_UPSTREAM = "https://api.your-transit-agency.com/v1/predictions"
+
+[env.staging.vars]
+# TRANSIT_UPSTREAM = "https://staging-api.your-transit-agency.com/v1/predictions"

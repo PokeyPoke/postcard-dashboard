@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ asset_prefix }}static/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{{ asset_prefix }}index.html" class="logo">📊 Postcard Dashboard</a>
+            <div class="nav-links">
+                <a href="{{ asset_prefix }}city/index.html">Cities</a>
+                <a href="{{ asset_prefix }}crypto/index.html">Crypto</a>
+                <a href="{{ asset_prefix }}stocks/index.html">Stocks</a>
+            </div>
+        </nav>
+    </header>
+
+    {% if layout == 'list' %}
+    <main data-search>
+        {{ content }}
+    </main>
+    <script src="{{ asset_prefix }}static/search.js"></script>
+    {% else %}
+    <main>
+        {{ content }}
+    </main>
+    {% endif %}
+
+    <footer>
+        <p>Generated at {{ generated_at }} | <a href="https://github.com">Source</a></p>
+    </footer>
+</body>
+</html>

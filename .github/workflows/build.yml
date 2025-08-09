@@ -1,0 +1,160 @@
+name: Build and Deploy Postcard Dashboard
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    # Run hourly builds (sharded)
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    inputs:
+      force_full_build:
+        description: 'Force full build (ignore sharding)'
+        required: false
+        default: 'false'
+
+jobs:
+  # Determine build strategy
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      strategy: ${{ steps.strategy.outputs.strategy }}
+      matrix: ${{ steps.strategy.outputs.matrix }}
+    steps:
+      - id: strategy
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]] || [[ "${{ github.event.inputs.force_full_build }}" == "true" ]]; then
+            echo "strategy=full" >> $GITHUB_OUTPUT
+            echo "matrix={\"include\":[{\"shard\":0,\"total\":1}]}" >> $GITHUB_OUTPUT
+          else
+            echo "strategy=sharded" >> $GITHUB_OUTPUT
+            echo "matrix={\"include\":[{\"shard\":0,\"total\":4},{\"shard\":1,\"total\":4},{\"shard\":2,\"total\":4},{\"shard\":3,\"total\":4}]}" >> $GITHUB_OUTPUT
+          fi
+
+  # Build job (runs in parallel for sharded builds)
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
+      fail-fast: false
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build site
+        env:
+          SHARD_INDEX: ${{ matrix.shard }}
+          SHARD_TOTAL: ${{ matrix.total }}
+        run: |
+          echo "Building shard ${{ matrix.shard }} of ${{ matrix.total }}"
+          python build.py
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-shard-${{ matrix.shard }}-of-${{ matrix.total }}
+          path: dist/
+          retention-days: 1
+          if-no-files-found: error
+
+  # Merge sharded builds and deploy (only runs for sharded strategy)
+  merge-and-deploy:
+    if: needs.setup.outputs.strategy == 'sharded'
+    needs: [setup, build]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Merge sharded builds
+        run: |
+          mkdir -p merged-site
+          
+          # Copy static assets from first shard
+          if [ -d "artifacts/site-shard-0-of-4/static" ]; then
+            cp -r artifacts/site-shard-0-of-4/static merged-site/
+          fi
+          
+          # Copy home page from first shard
+          if [ -f "artifacts/site-shard-0-of-4/index.html" ]; then
+            cp artifacts/site-shard-0-of-4/index.html merged-site/
+          fi
+          
+          # Merge all other content
+          for shard_dir in artifacts/site-shard-*/; do
+            echo "Merging $(basename "$shard_dir")"
+            
+            # Copy all directories except static (to avoid conflicts)
+            find "$shard_dir" -type d -not -name "static" -not -path "*/static/*" | while read dir; do
+              rel_dir="${dir#$shard_dir}"
+              if [ -n "$rel_dir" ] && [ "$rel_dir" != "." ]; then
+                mkdir -p "merged-site/$rel_dir"
+              fi
+            done
+            
+            # Copy all files except index.html and static files
+            find "$shard_dir" -type f -not -path "*/static/*" -not -name "index.html" | while read file; do
+              rel_file="${file#$shard_dir}"
+              if [ -n "$rel_file" ]; then
+                cp "$file" "merged-site/$rel_file"
+              fi
+            done
+          done
+          
+          echo "Merged site structure:"
+          find merged-site -type f | head -20
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./merged-site
+          cname: # Add your custom domain here if needed
+
+  # Deploy directly (only runs for full builds)
+  deploy-full:
+    if: needs.setup.outputs.strategy == 'full'
+    needs: [setup, build]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: site-shard-0-of-1
+          path: dist/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          cname: # Add your custom domain here if needed
+
+  # Cleanup old artifacts
+  cleanup:
+    if: always()
+    needs: [merge-and-deploy, deploy-full]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete artifacts
+        uses: geekyeggo/delete-artifact@v4
+        with:
+          name: |
+            site-shard-*
+        continue-on-error: true

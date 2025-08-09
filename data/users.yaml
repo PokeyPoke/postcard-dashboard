@@ -1,0 +1,33 @@
+users:
+  demo:
+    weather:
+      city: "San Francisco, CA"
+      units: "fahrenheit"
+    crypto:
+      coins: ["bitcoin", "ethereum", "solana"]
+      vs_currency: "usd"
+    stocks:
+      tickers: ["AAPL", "MSFT", "GOOGL"]
+    transit:
+      api_url: "https://demo-worker.example.com/v1/eta?route=N&stop=times-sq"
+  
+  alice:
+    weather:
+      latitude: 40.7128
+      longitude: -74.0060
+      units: "celsius"
+    crypto:
+      coins: ["bitcoin", "ethereum"]
+      vs_currency: "usd"
+    stocks:
+      tickers: ["SPY", "QQQ", "TSLA"]
+  
+  bob:
+    weather:
+      city: "Seattle, WA"
+      units: "fahrenheit"
+    crypto:
+      coins: ["dogecoin", "cardano"]
+      vs_currency: "usd"
+    stocks:
+      tickers: ["NVDA", "AMD", "INTC"]
