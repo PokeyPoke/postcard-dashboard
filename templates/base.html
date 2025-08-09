@@ -20,17 +20,42 @@
 
     {% if layout == 'list' %}
     <main data-search>
+        {% if breadcrumb %}
+        <div class="breadcrumb">{{ breadcrumb | safe }}</div>
+        {% endif %}
         {{ content }}
     </main>
     <script src="{{ asset_prefix }}static/search.js"></script>
     {% else %}
     <main>
+        {% if breadcrumb %}
+        <div class="breadcrumb">{{ breadcrumb | safe }}</div>
+        {% endif %}
         {{ content }}
     </main>
     {% endif %}
 
     <footer>
-        <p>Generated at {{ generated_at }} | <a href="https://github.com">Source</a></p>
+        <p>Generated at {{ generated_at }} | <a href="https://github.com/PokeyPoke/postcard-dashboard">Source</a></p>
+        <p class="local-time">Local time: <span id="local-time">—</span></p>
     </footer>
+    
+    <script>
+        // Update local time
+        function updateLocalTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleString(undefined, {
+                year: 'numeric',
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('local-time').textContent = timeStr;
+        }
+        updateLocalTime();
+        setInterval(updateLocalTime, 1000);
+    </script>
 </body>
 </html>

@@ -210,7 +210,25 @@ tr:last-child td {
 }
 
 /* Weather specific styles */
+.weather-summary {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #252525;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.weather-summary p {
+    margin: 0;
+    color: #e0e0e0;
+    font-size: 1rem;
+}
+
 .weather .card-content {
+    display: block;
+}
+
+.weather-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
@@ -279,6 +297,20 @@ footer {
     font-size: 0.875rem;
 }
 
+footer p {
+    margin: 0.25rem 0;
+}
+
+.local-time {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+#local-time {
+    color: #888;
+    font-weight: 500;
+}
+
 footer a {
     color: #ccc;
     text-decoration: none;
@@ -286,6 +318,137 @@ footer a {
 
 footer a:hover {
     color: #fff;
+}
+
+/* Top movers and market status */
+.market-status {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.top-movers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.movers-section h3 {
+    margin: 0 0 1rem 0;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.movers-section table.compact {
+    font-size: 0.875rem;
+}
+
+.movers-section table.compact th,
+.movers-section table.compact td {
+    padding: 0.5rem 0.75rem;
+}
+
+/* Sticky search */
+.list-header {
+    position: sticky;
+    top: 0;
+    background-color: #0f0f0f;
+    z-index: 10;
+    padding: 1rem 0;
+    border-bottom: 1px solid #333;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #888;
+}
+
+.breadcrumb a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: #fff;
+}
+
+.breadcrumb .separator {
+    margin: 0 0.5rem;
+    color: #666;
+}
+
+/* Live tiles for homepage */
+.live-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.weather-tile .card-content,
+.movers-tile .card-content {
+    padding: 1.5rem;
+}
+
+.tile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tile-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.tile-value {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1;
+}
+
+.tile-location {
+    font-size: 1rem;
+    color: #888;
+    margin-top: 0.5rem;
+}
+
+.tile-summary {
+    text-align: center;
+    color: #ccc;
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+    background-color: #252525;
+    border-radius: 4px;
+}
+
+.movers-preview {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+    text-align: center;
+}
+
+.tile-footer {
+    text-align: center;
+    font-size: 0.875rem;
+    padding-top: 1rem;
+    border-top: 1px solid #333;
+}
+
+.tile-footer a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.tile-footer a:hover {
+    text-decoration: underline;
 }
 
 /* Links */
