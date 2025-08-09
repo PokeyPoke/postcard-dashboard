@@ -75,6 +75,15 @@ jobs:
     needs: [setup, build]
     runs-on: ubuntu-latest
     
+    # Set permissions for GitHub Pages deployment
+    permissions:
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -119,18 +128,32 @@ jobs:
           echo "Merged site structure:"
           find merged-site -type f | head -20
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./merged-site
-          cname: # Add your custom domain here if needed
+          path: ./merged-site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   # Deploy directly (only runs for full builds)
   deploy-full:
     if: needs.setup.outputs.strategy == 'full'
     needs: [setup, build]
     runs-on: ubuntu-latest
+    
+    # Set permissions for GitHub Pages deployment
+    permissions:
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
       - name: Download build artifacts
@@ -139,12 +162,17 @@ jobs:
           name: site-shard-0-of-1
           path: dist/
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          cname: # Add your custom domain here if needed
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   # Cleanup old artifacts
   cleanup:

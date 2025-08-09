@@ -260,4 +260,4 @@ MIT License - see LICENSE file for details.
 
 **Repository:** https://github.com/PokeyPoke/postcard-dashboard
 
-**Live demo:** Coming soon (see [Issue #1](https://github.com/PokeyPoke/postcard-dashboard/issues/1) for deployment setup)
+**Live demo:** https://pokeypoke.github.io/postcard-dashboard/ (builds automatically via GitHub Actions)
