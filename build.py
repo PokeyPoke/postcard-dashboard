@@ -261,8 +261,8 @@ class SiteBuilder:
                     best_change = -999
                     for coin_id in user_coins:
                         if coin_id in crypto_prices:
-                            change = crypto_prices[coin_id].get('price_change_24h', -999)
-                            if change > best_change:
+                            change = crypto_prices[coin_id].get('price_change_24h')
+                            if change is not None and change > best_change:
                                 best_change = change
                                 best_crypto = (coin_id, crypto_prices[coin_id])
                     
@@ -270,8 +270,11 @@ class SiteBuilder:
                         coin_id, coin_data = best_crypto
                         name = coin_data.get('name', coin_id.title())
                         change = coin_data.get('price_change_24h', 0)
-                        symbol = "🚀" if change > 0 else "📉" if change < 0 else "—"
-                        movers_list.append(f"{symbol} {name}: {change:+.1f}%")
+                        if change is not None:
+                            symbol = "🚀" if change > 0 else "📉" if change < 0 else "—"
+                            movers_list.append(f"{symbol} {name}: {change:+.1f}%")
+                        else:
+                            movers_list.append(f"— {name}: no data")
             
             # Get user's stock preferences  
             if 'stocks' in user_config:
