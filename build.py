@@ -719,7 +719,7 @@ class SiteBuilder:
         valid_coins = [(coin, prices[coin]) for coin in coins if coin in prices and prices[coin].get('usd', 0) > 0]
         
         # Sort by market cap rank if available, otherwise by price
-        valid_coins.sort(key=lambda x: x[1].get('market_cap_rank', 999))
+        valid_coins.sort(key=lambda x: x[1].get('market_cap_rank') or 999)
         
         for coin, data in valid_coins:
             name = data.get('name', coin.title())
@@ -880,8 +880,8 @@ class SiteBuilder:
             if data.get('price_change_24h') is not None:
                 coins_with_change.append((coin_id, data))
         
-        # Sort by 24h change percentage
-        coins_with_change.sort(key=lambda x: x[1]['price_change_24h'], reverse=True)
+        # Sort by 24h change percentage (with null safety)
+        coins_with_change.sort(key=lambda x: x[1].get('price_change_24h', 0), reverse=True)
         
         # Get top 5 gainers and losers
         top_gainers = coins_with_change[:5]
