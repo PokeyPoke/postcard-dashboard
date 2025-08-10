@@ -14,3 +14,4 @@ apis:
 site:
   title: "Postcard Dashboard"
   description: "Static dashboard with weather, stocks, crypto, and transit data"
+  homepage_user: "demo"  # Which user's preferences to show on homepage tiles

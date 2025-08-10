@@ -167,30 +167,40 @@ class SiteBuilder:
             f.write(page_content)
     
     def build_home_live_tiles(self):
-        """Build live preview tiles for homepage"""
+        """Build live preview tiles for homepage using configured user preferences"""
         tiles_html = '<div class="live-tiles">'
         
-        # Get default user for weather preview
+        # Get configured homepage user
         users = self.load_users()
-        default_user_config = None
-        if users:
-            default_username = list(users.keys())[0]
-            default_user_config = users[default_username]
+        homepage_user = self.config.get('site', {}).get('homepage_user', 'demo')
+        user_config = users.get(homepage_user)
         
-        # Weather tile
-        weather_tile = self.build_home_weather_tile(default_user_config)
-        if weather_tile:
-            tiles_html += weather_tile
+        if not user_config:
+            # Fallback to first user if configured user doesn't exist
+            if users:
+                homepage_user = list(users.keys())[0]
+                user_config = users[homepage_user]
         
-        # Top movers tile 
-        movers_tile = self.build_home_movers_tile()
-        if movers_tile:
-            tiles_html += movers_tile
+        if user_config:
+            # Weather tile with user's preferred location
+            weather_tile = self.build_home_weather_tile(user_config, homepage_user)
+            if weather_tile:
+                tiles_html += weather_tile
+            
+            # Personal movers tile with user's preferred stocks/crypto
+            personal_movers_tile = self.build_home_personal_movers_tile(user_config, homepage_user)
+            if personal_movers_tile:
+                tiles_html += personal_movers_tile
+        else:
+            # Fallback to global data if no users configured
+            global_movers_tile = self.build_home_movers_tile()
+            if global_movers_tile:
+                tiles_html += global_movers_tile
         
         tiles_html += '</div>'
         return tiles_html
     
-    def build_home_weather_tile(self, user_config):
+    def build_home_weather_tile(self, user_config, username):
         """Build weather preview tile for homepage"""
         if not user_config or 'weather' not in user_config:
             return ""
@@ -228,10 +238,84 @@ class SiteBuilder:
             </div>
             """
             
-            return self.render_card('weather-tile', 'Your City Now', content=content)
+            title = f"{username.title()}'s Weather"
+            return self.render_card('weather-tile', title, content=content)
             
         except Exception as e:
             print(f"Error building weather tile: {e}")
+            return ""
+    
+    def build_home_personal_movers_tile(self, user_config, username):
+        """Build personalized movers tile showing user's preferred stocks/crypto"""
+        try:
+            movers_list = []
+            
+            # Get user's crypto preferences
+            if 'crypto' in user_config:
+                user_coins = user_config['crypto'].get('coins', [])[:5]  # Limit to 5
+                if user_coins:
+                    crypto_prices = self.fetch_crypto_prices(user_coins)
+                    
+                    # Find best performer from user's coins
+                    best_crypto = None
+                    best_change = -999
+                    for coin_id in user_coins:
+                        if coin_id in crypto_prices:
+                            change = crypto_prices[coin_id].get('price_change_24h', -999)
+                            if change > best_change:
+                                best_change = change
+                                best_crypto = (coin_id, crypto_prices[coin_id])
+                    
+                    if best_crypto:
+                        coin_id, coin_data = best_crypto
+                        name = coin_data.get('name', coin_id.title())
+                        change = coin_data.get('price_change_24h', 0)
+                        symbol = "🚀" if change > 0 else "📉" if change < 0 else "—"
+                        movers_list.append(f"{symbol} {name}: {change:+.1f}%")
+            
+            # Get user's stock preferences  
+            if 'stocks' in user_config:
+                user_tickers = user_config['stocks'].get('tickers', [])[:5]  # Limit to 5
+                if user_tickers:
+                    stock_prices = self.fetch_stock_prices(user_tickers)
+                    
+                    # Find best performer from user's stocks
+                    best_stock = None
+                    best_change_pct = -999
+                    for ticker in user_tickers:
+                        if ticker in stock_prices:
+                            data = stock_prices[ticker]
+                            change = data.get('change')
+                            if change is not None and data.get('close'):
+                                change_pct = (change / (data['close'] - change)) * 100 if (data['close'] - change) != 0 else 0
+                                if abs(change_pct) > abs(best_change_pct):
+                                    best_change_pct = change_pct
+                                    best_stock = (ticker, data, change_pct)
+                    
+                    if best_stock:
+                        ticker, stock_data, change_pct = best_stock
+                        symbol = "📈" if change_pct > 0 else "📉" if change_pct < 0 else "—"
+                        movers_list.append(f"{symbol} {ticker}: {change_pct:+.1f}%")
+            
+            if not movers_list:
+                movers_list = [f"{username.title()}'s portfolio loading..."]
+            
+            content = f"""
+            <div class="tile-content">
+                <div class="movers-preview">
+                    {'<br>'.join(movers_list)}
+                </div>
+                <div class="tile-footer">
+                    <a href="u/{username}/index.html">View {username.title()}'s dashboard →</a>
+                </div>
+            </div>
+            """
+            
+            title = f"{username.title()}'s Top Movers"
+            return self.render_card('movers-tile', title, content=content)
+            
+        except Exception as e:
+            print(f"Error building personal movers tile: {e}")
             return ""
     
     def build_home_movers_tile(self):

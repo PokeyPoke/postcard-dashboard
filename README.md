@@ -74,6 +74,16 @@ users:
       api_url: "https://your-worker.workers.dev/v1/eta?route=N&stop=123"
 ```
 
+**📋 For detailed user setup instructions, see [USER_SETUP_GUIDE.md](USER_SETUP_GUIDE.md)**
+
+### Homepage Personalization
+
+Set which user's preferences appear on the homepage tiles in `config.yaml`:
+```yaml
+site:
+  homepage_user: "username"  # Shows this user's weather and portfolio on homepage
+```
+
 ## Deployment
 
 ### GitHub Pages (Automatic)
